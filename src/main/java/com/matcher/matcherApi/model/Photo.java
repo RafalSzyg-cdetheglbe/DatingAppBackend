@@ -16,5 +16,8 @@ public class Photo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     public String  url;
+    @ManyToOne
+    @JoinColumn(name = "users")
+    public User user;
 
 }

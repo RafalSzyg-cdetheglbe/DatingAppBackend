@@ -21,14 +21,12 @@ public class User {
     public String firstName;
     public String lastName;
     @ManyToOne
-    @JoinColumn(name = "users_role")
+    @JoinColumn(name = "user_role")
     public UserRole userRole;
     public String gender;
     @ManyToOne
     @JoinColumn(name = "gender_interest")
     public GenderInterest genderInterest;
     public boolean isDeleted;
-    @ManyToOne
-    @JoinColumn(name = "photo")
-    public Photo photo;
+
 }
