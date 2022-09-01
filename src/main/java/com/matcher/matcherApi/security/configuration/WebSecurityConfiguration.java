@@ -26,9 +26,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
 
     private static final String[] ADMIN_LIST_URLS = {
             "/api/users**",
-          //  "/api/history/**",
-         //   "/api/timers/all/**",
-         //   "/api/tasks/all/**"
+
     };
     private static final String[] WHITE_LIST_URLS = {
             "/",

@@ -17,7 +17,7 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     @ManyToOne
-    @JoinColumn(name = "conversation")
+    @JoinColumn(name = "conversation_id")
     public Conversation conversation;
     public String content;
     public LocalDateTime sendDate;

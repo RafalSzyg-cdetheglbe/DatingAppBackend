@@ -16,10 +16,12 @@ public class MatchMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     @ManyToOne
-    @JoinColumn(name = "users")
+    @JoinColumn(name = "user_id")
     public User user;
     @ManyToOne
-    @JoinColumn(name = "match")
+    @JoinColumn(name = "matches_id")
     public Match match;
     public boolean isDeleted;
+
+
 }

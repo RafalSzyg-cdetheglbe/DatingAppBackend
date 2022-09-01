@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name="MATCH")
+@Table(name="MATCHES")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,8 +16,12 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     @ManyToOne
-    @JoinColumn(name = "users")
+    @JoinColumn(name = "user_id")
     public User user;
     public boolean isDeleted;
 
+    public Match(User user, boolean b) {
+        this.setUser(user);
+        this.setDeleted(b);
+    }
 }

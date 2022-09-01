@@ -17,7 +17,7 @@ public class Photo {
     public Long id;
     public String  url;
     @ManyToOne
-    @JoinColumn(name = "users")
+    @JoinColumn(name = "users_id")
     public User user;
 
 }
