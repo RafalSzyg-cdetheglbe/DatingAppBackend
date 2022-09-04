@@ -17,9 +17,12 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     @ManyToOne
-    @JoinColumn(name = "conversation_id")
-    public Conversation conversation;
+    @JoinColumn(name = "match_id")
+    public Match match;
     public String content;
     public LocalDateTime sendDate;
     public boolean isDeleted;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    public User user;
 }

@@ -7,7 +7,6 @@ import com.matcher.matcherApi.model.User;
 import com.matcher.matcherApi.repository.MatchMemberRepository;
 import com.matcher.matcherApi.repository.MatchRepository;
 import com.matcher.matcherApi.repository.UserRepository;
-import com.matcher.matcherApi.service.interfaces.IConversationService;
 import com.matcher.matcherApi.service.interfaces.IMatchMemberService;
 import com.matcher.matcherApi.service.interfaces.IMatchService;
 import org.springframework.stereotype.Service;
@@ -21,15 +20,15 @@ public class MatchService implements IMatchService {
     private final MatchRepository matchRepository;
     private  final MatchMemberRepository matchMemberRepository;
     private final IMatchMemberService imatchMemberService;
-    private final IConversationService iconversationService;
+
 
     public MatchService(UserRepository userRepository, MatchRepository matchRepository, MatchMemberRepository matchMemberRepository,
-                        IMatchMemberService imatchMemberService, IConversationService iconversationService) {
+                        IMatchMemberService imatchMemberService) {
         this.userRepository = userRepository;
         this.matchRepository = matchRepository;
         this.matchMemberRepository = matchMemberRepository;
         this.imatchMemberService = imatchMemberService;
-        this.iconversationService = iconversationService;
+
     }
 
     @Transactional
@@ -46,7 +45,6 @@ public class MatchService implements IMatchService {
         this.matchRepository.save(match);
 
        this.imatchMemberService.addMatchMember(userid,match.getId());
-       this.iconversationService.addConversation(match.getId());
 
         MatchDTO matchDTO=new MatchDTO();
         matchDTO.setId(match.getId());
