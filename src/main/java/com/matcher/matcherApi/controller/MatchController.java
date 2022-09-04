@@ -1,16 +1,16 @@
 package com.matcher.matcherApi.controller;
 
+import com.matcher.matcherApi.DTO.MatchDTO;
+import com.matcher.matcherApi.model.Match;
 import com.matcher.matcherApi.service.interfaces.IMatchService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
+import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api")
+@CrossOrigin(origins="http://localhost:4200")
 public class MatchController {
     private final IMatchService iMatchService;
 
@@ -18,10 +18,24 @@ public class MatchController {
         this.iMatchService = iMatchService;
     }
 
-    @PostMapping("/match/{userid}")
-    public void addMatch(@PathVariable Long userid, Principal principal){
+    @PostMapping("match/{authorId}")
+    public MatchDTO addMatch(@PathVariable("authorId") Long authorId, @RequestBody MatchDTO matchDTO){
+        Long userid=matchDTO.getUser();
 
-        this.iMatchService.addMatch(userid,principal.getName());
+       return this.iMatchService.addMatch(userid,authorId);
 
     }
+
+    @GetMapping("match/{id}")
+    public List<Match> getUserMatches(@PathVariable("id")Long id){
+
+        return this.iMatchService.getUserMatches(id);
+    }
+
+    @GetMapping("matches")
+    public List<Match> getMatches(){
+
+        return this.iMatchService.getMatches();
+    }
+
 }

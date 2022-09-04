@@ -19,7 +19,7 @@ public class MessageController {
     }
 
     @PostMapping("/message/{conversationId}")
-    public void sendMessage(@PathVariable Long conversationId, @RequestBody String content,Principal principal){
-        this.iMessageService.addMessage(conversationId,content,principal.getName());
+    public void sendMessage(@PathVariable Long conversationId, @RequestBody String content){
+
     }
 }

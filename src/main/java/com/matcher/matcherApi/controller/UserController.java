@@ -1,24 +1,47 @@
 package com.matcher.matcherApi.controller;
 
+import com.matcher.matcherApi.DTO.UserDTO;
 import com.matcher.matcherApi.model.User;
 import com.matcher.matcherApi.service.implementation.UserService;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
-    private final UserService userService;
+    private final UserService IuserService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController( UserService iuserService) {
+        IuserService = iuserService;
+
     }
+
+    @GetMapping("/users")
+    public List<User> getUsers(){
+       return this.IuserService.getUsers();
+    }
+
+    @GetMapping("/users/{id}")
+    public List<User> getUsers(@PathVariable("id")Long id){
+        return this.IuserService.getUser(id);
+    }
+
+    @GetMapping("/users/matching/{id}")
+        public List<User> getUsersToMatch(@PathVariable("id")Long id){
+        return this.IuserService.getUsersToMatch(id);
+    }
+
+
 
     @PostMapping("/users")
-    public void addUser(User user){
-       // this.userService.addUser(user);
+    public void addUser(@RequestBody UserDTO userDTO){
+        System.out.println(userDTO);
+        this.IuserService.addUser(userDTO);
     }
+
+
 
 }

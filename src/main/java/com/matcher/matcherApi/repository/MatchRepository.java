@@ -16,4 +16,8 @@ public interface MatchRepository extends JpaRepository<Match,Long> {
     @Query(value = queryConversationMach, nativeQuery = true)
     List<Match> findByMatchId(Long id);
 
+    final String queryUserMatches="SELECT m.* FROM matches m WHERE m.user_id=:id";
+    @Query(value=queryUserMatches,nativeQuery = true)
+    List<Match>findByUserId(Long id);
+
 }

@@ -20,6 +20,7 @@ public class User {
     public String password;
     public String firstName;
     public String lastName;
+    private int age;
     @ManyToOne
     @JoinColumn(name = "user_role")
     public UserRole userRole;

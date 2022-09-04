@@ -1,65 +1,80 @@
 package com.matcher.matcherApi.service.implementation;
 
 import com.matcher.matcherApi.DTO.UserDTO;
-import com.matcher.matcherApi.model.User;
+import com.matcher.matcherApi.model.*;
+import com.matcher.matcherApi.repository.MatchMemberRepository;
+import com.matcher.matcherApi.repository.MatchRepository;
 import com.matcher.matcherApi.repository.UserRepository;
 import com.matcher.matcherApi.service.interfaces.IUserService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Service
 @Slf4j
-public class UserService implements IUserService , UserDetailsService {
+public class UserService implements IUserService {
 
     private final UserRepository userRepository;
+    private final MatchRepository matchRepository;
+    private final MatchMemberRepository matchMemberRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, MatchRepository matchRepository, MatchMemberRepository matchMemberRepository) {
         this.userRepository = userRepository;
+        this.matchRepository = matchRepository;
+        this.matchMemberRepository = matchMemberRepository;
+    }
+
+
+    @Override
+    public List<User> getUsers() {
+        List<User> users = this.userRepository.findAll();
+        System.out.println(users);
+        return users;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findUserByEmail(username);
-        if (user == null) {
-            System.out.println("User Not Found In The Database");
-            throw new UsernameNotFoundException("User Not Found In The Database");
-        } else {
-            System.out.println("User Found In The Database ");
-        }
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                // user.isActive(),
-                // true,
-                // true,
-                // true,
-                grantAuthorities(user.getUserRole().getName()));
+    public void addUser(UserDTO userDTO) {
+        User user = new User();
+        UserRole userRole = new UserRole();
+        GenderInterest genderInterest = new GenderInterest();
+        genderInterest.setId(userDTO.getGenderInterest());
+        userRole.setId(1L);
+        user.setUserRole(userRole);
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+        user.setAge(userDTO.getAge());
+        user.setGender(userDTO.getGender());
+        user.setGenderInterest(genderInterest);
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setDeleted(false);
+        System.out.println(user);
+        this.userRepository.save(user);
     }
 
-    public Collection<? extends GrantedAuthority> grantAuthorities(String role) {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
-        return authorities;
+    @Override
+    public List<User> getUser(Long id) {
+        User user = this.userRepository.findById(id).orElseThrow(() -> new IllegalStateException("NotFoundInDatabase"));
+        List<User> users = new ArrayList<>();
+        users.add(user);
+        return users;
+    }
+
+    @Override
+    public List<User> getUsersToMatch(Long id) {
+        User user = this.userRepository.findById(id).orElseThrow(() -> new IllegalStateException("NotFoundInDatabase"));
+        // List<Match> matches=this.matchRepository.findByUserId(id);
+
+        List<User> users = this.userRepository.findAll();
+        users.removeIf(u -> u.getId().equals(id));
+
+
+
+
+        return users;
     }
 }
 
-/*
-    user.setEmail(userDTO.getEmail());
-            user.setPassword(userDTO.getPassword());
-            user.setFirstName(userDTO.getFirstName());
-            user.setLastName(userDTO.getLastName());
-            user.setGender(userDTO.getGender());
-
- */

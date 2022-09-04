@@ -1,39 +1,70 @@
 package com.matcher.matcherApi.service.implementation;
 
+import com.matcher.matcherApi.DTO.MatchDTO;
 import com.matcher.matcherApi.model.Match;
+import com.matcher.matcherApi.model.MatchMember;
 import com.matcher.matcherApi.model.User;
 import com.matcher.matcherApi.repository.MatchMemberRepository;
 import com.matcher.matcherApi.repository.MatchRepository;
 import com.matcher.matcherApi.repository.UserRepository;
+import com.matcher.matcherApi.service.interfaces.IConversationService;
+import com.matcher.matcherApi.service.interfaces.IMatchMemberService;
 import com.matcher.matcherApi.service.interfaces.IMatchService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class MatchService implements IMatchService {
     private final UserRepository userRepository;
     private final MatchRepository matchRepository;
     private  final MatchMemberRepository matchMemberRepository;
-    private final MatchMemberService matchMemberService;
-    private final ConversationService conversationService;
+    private final IMatchMemberService imatchMemberService;
+    private final IConversationService iconversationService;
 
-    public MatchService(UserRepository userRepository, MatchRepository matchRepository, MatchMemberRepository matchMemberRepository, MatchMemberService matchMemberService, ConversationService conversationService) {
+    public MatchService(UserRepository userRepository, MatchRepository matchRepository, MatchMemberRepository matchMemberRepository,
+                        IMatchMemberService imatchMemberService, IConversationService iconversationService) {
         this.userRepository = userRepository;
         this.matchRepository = matchRepository;
         this.matchMemberRepository = matchMemberRepository;
-        this.matchMemberService = matchMemberService;
-        this.conversationService = conversationService;
+        this.imatchMemberService = imatchMemberService;
+        this.iconversationService = iconversationService;
     }
 
     @Transactional
-    public void addMatch(Long id, String email){
+    public MatchDTO addMatch(Long userid, Long authorid){
+    List<MatchMember>matchMembers=this.matchMemberRepository.findByUserId(userid);
+    for(MatchMember m:matchMembers){
+        if(m.getMatch().getUser().getId().equals(authorid))return null;
 
-        User user=this.userRepository.findUserByEmail(email);
+    }
+        System.out.println(authorid);
+        User user= new User();
+        user.setId(authorid);
         Match match=new Match(user,true);
-
         this.matchRepository.save(match);
-        this.matchMemberService.addMatchMember(id,match.getId());
-        this.conversationService.addConversation(match.getId());
+
+       this.imatchMemberService.addMatchMember(userid,match.getId());
+       this.iconversationService.addConversation(match.getId());
+
+        MatchDTO matchDTO=new MatchDTO();
+        matchDTO.setId(match.getId());
+        matchDTO.setUser(userid);
+        matchDTO.setDeleted(false);
+        return matchDTO;
+    }
+
+    @Override
+    public List<Match> getUserMatches(Long id) {
+        List<Match>matches=this.matchRepository.findByUserId(id);
+
+        return matches;
+    }
+
+    @Override
+    public List<Match> getMatches() {
+
+        return this.matchRepository.findAll();
     }
 }
